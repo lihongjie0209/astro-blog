@@ -68,6 +68,18 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
         search.triggerSearch(query);
       }
 
+      // Make pagefind result links work with View Transitions
+      // by adding data-astro-reload attribute
+      const observer = new MutationObserver(() => {
+        const resultLinks = pageFindSearch.querySelectorAll(
+          ".pagefind-ui__result-link:not([data-astro-reload])"
+        );
+        resultLinks.forEach(link => {
+          link.setAttribute("data-astro-reload", "");
+        });
+      });
+      observer.observe(pageFindSearch, { childList: true, subtree: true });
+
       // Reset search param if search input is cleared
       const searchInput = document.querySelector(".pagefind-ui__search-input");
       const clearButton = document.querySelector(".pagefind-ui__search-clear");
