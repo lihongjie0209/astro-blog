@@ -3,7 +3,6 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
-import remarkMermaid from "remark-mermaidjs";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -24,7 +23,6 @@ export default defineConfig({
     remarkPlugins: [
       remarkToc,
       [remarkCollapse, { test: "Table of contents" }],
-      remarkMermaid,
     ],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
