@@ -126,9 +126,9 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    L1[Level 1: System Context<br/>系统全景图] --> L2[Level 2: Containers<br/>容器图 (服务/DB)]
-    L2 --> L3[Level 3: Components<br/>组件图 (Controller/Service)]
-    L3 --> L4[Level 4: Code<br/>类图 (通常忽略)]
+    L1["Level 1: System Context<br/>系统全景图"] --> L2["Level 2: Containers<br/>容器图 - 服务/DB"]
+    L2 --> L3["Level 3: Components<br/>组件图 - Controller/Service"]
+    L3 --> L4["Level 4: Code<br/>类图 - 通常忽略"]
   
     style L1 fill:#f9f,stroke:#333
     style L2 fill:#bbf,stroke:#333
