@@ -1,6 +1,6 @@
 ---
 title: "Spring 依赖注入深度解析：从 Framework 6.2 到 7.0"
-author: Me
+author: 李宏杰
 pubDatetime: 2025-12-04T00:00:00Z
 modDatetime: 2025-12-04T00:00:00Z
 slug: spring-di

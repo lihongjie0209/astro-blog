@@ -1,6 +1,6 @@
 ---
 title: Hello World
-author: Me
+author: 李宏杰
 pubDatetime: 2025-12-04T00:00:00Z
 slug: hello-world
 featured: true

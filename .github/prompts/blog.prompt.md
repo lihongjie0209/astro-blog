@@ -20,7 +20,7 @@
 ```yaml
 ---
 title: "文章标题"
-author: Me
+author: 李宏杰
 pubDatetime: 2025-12-04T00:00:00Z  # 发布时间，使用当前日期
 modDatetime: 2025-12-04T00:00:00Z  # 修改时间，使用当前日期
 slug: article-slug                  # URL 路径，与文件名一致（不含 .md）
