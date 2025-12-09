@@ -1,24 +1,15 @@
 ---
-import { getCollection } from "astro:content";
-import Main from "@/layouts/Main.astro";
-import Layout from "@/layouts/Layout.astro";
-import Tag from "@/components/Tag.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import getUniqueTags from "@/utils/getUniqueTags";
-import { SITE } from "@/config";
-
-const posts = await getCollection("blog");
-
-let tags = getUniqueTags(posts);
+import PageLayout from "@/layouts/PageLayout.astro";
+import { tagsWithPostCount } from '@/content/posts';
+import { getRandomRGB } from '@/utils/color';
 ---
 
-<Layout title={`Tags | ${SITE.title}`}>
-  <Header />
-  <Main pageTitle="Tags" pageDesc="All the tags used in posts.">
-    <ul>
-      {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} size="lg" />)}
-    </ul>
-  </Main>
-  <Footer />
-</Layout>
+<PageLayout title="标签" titleIcon="mdi:tag-multiple" asideCards={['CardRecentPost','CardCategroies','CardToolbar']}>
+
+<div class="lh-[3] text-4">
+  {Object.entries(tagsWithPostCount).map(([tag,post_count]) => (
+    <a class="inline-block mr1em hover:text-[#49b1f5!important] hover:scale-110 duration-200" href={`/tags/${tag}`} style={`font-size:${post_count*0.1+1}em;color:${getRandomRGB()}`}>{tag}({post_count})</a>
+  ))}
+</div>
+
+</PageLayout>

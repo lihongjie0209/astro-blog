@@ -1,21 +1,25 @@
-import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
-import { getPath } from "@/utils/getPath";
-import getSortedPosts from "@/utils/getSortedPosts";
-import { SITE } from "@/config";
+import type { APIContext } from 'astro'
+import rss from '@astrojs/rss'
+import posts from '@/content/posts'
+import { SITE_INFO } from '@/config'
+import { markdown2html } from '@/utils/markdown'
 
-export async function GET() {
-  const posts = await getCollection("blog");
-  const sortedPosts = getSortedPosts(posts);
-  return rss({
-    title: SITE.title,
-    description: SITE.desc,
-    site: SITE.website,
-    items: sortedPosts.map(({ data, id, filePath }) => ({
-      link: getPath(id, filePath),
-      title: data.title,
-      description: data.description,
-      pubDate: new Date(data.modDatetime ?? data.pubDatetime),
-    })),
-  });
+export const GET = async (context: APIContext) => {
+  const resp = await rss({
+    title: SITE_INFO.title,
+    description: SITE_INFO.description,
+    site: context.site!,
+    items: await Promise.all(
+      posts.map(async (post) => ({
+        title: post.data.title,
+        pubDate: post.data.publishDate,
+        description: post.data.description,
+        categories: post.data.categories,
+        author: SITE_INFO.author,
+        link: `/posts/${post.id}/`,
+        content: await markdown2html(post.body!,true) + post.data.bodyJoinHtml,
+      }))
+    ),
+  })
+  return new Response(resp.body, { headers: {'Content-Type': 'application/xml'} })
 }
