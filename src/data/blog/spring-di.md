@@ -48,6 +48,7 @@ public class UserRepository {
 * **原理** ：只有在代码实际调用 `dataSource` 的方法时，代理才会去解析并触发真实 Bean 的初始化。
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant Client as Client Code
     participant Proxy as @Lazy Proxy
@@ -179,6 +180,7 @@ public class MyService {
 **Bean 定义流程图：**
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph TD
     A[注入点请求 Bean 类型 T] --> B{是否存在唯一 T?}
     B -- 是 --> C[注入该 Bean]

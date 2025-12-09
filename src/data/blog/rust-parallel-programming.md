@@ -45,6 +45,7 @@ Rust 生态中涌现了大量性能卓越的工具（如 `uv` 替代 pip, `polar
 | **异步 (Asynchronicity)** | 任务之间的执行顺序不连续，通常用于 I/O 密集型场景。  | **非阻塞** ：与同步 (Sequential) 相对。        |
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph TD
     subgraph Concurrency ["并发 - 单核"]
         C1["任务 A 部分"] --> C2["切换"] --> C3["任务 B 部分"] --> C4["切换"] --> C5["任务 A 剩余"]
@@ -72,6 +73,7 @@ Rayon 不使用简单的 Fork-Join 模型，而是采用了动态平衡的 **工
 * **优势** ：减少线程空闲时间，自动处理负载不均衡，减少锁竞争。
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant T1 as Thread 1 - 忙碌
     participant T2 as Thread 2 - 空闲

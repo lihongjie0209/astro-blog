@@ -140,6 +140,7 @@ README 通常只包含概览,对于 API 层,我们需要更详细的技术文档
 整个文档编写流程可以总结为以下自动化路径：
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph TD
     Start[项目开发完成] --> README{生成 README}
     README -->|Agent Mode| P1[使用 .github/prompts 模板]

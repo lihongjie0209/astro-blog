@@ -54,6 +54,7 @@ description: "详细介绍如何使用 Debezium CDC 将 PostgreSQL 数据实时�
 ### 3.1 架构图
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph LR
     subgraph PostgreSQL
         DB[("Database")]

@@ -45,6 +45,7 @@ description: "Design as Code 实践指南：将软件设计制品（文档、图
 ### 2.2 流程示例
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph LR
     A[开发人员] -->|编写 .md 文件| B(Git 仓库)
     B -->|CI/CD 流水线| C{构建工具<br/>Docusaurus}
@@ -98,6 +99,7 @@ Accepted (已接受)
 **代码：**
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant U as 用户
     participant A as API 网关
@@ -125,6 +127,7 @@ sequenceDiagram
 ### 5.1 C4 层次图解
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph TD
     L1["Level 1: System Context<br/>系统全景图"] --> L2["Level 2: Containers<br/>容器图 - 服务/DB"]
     L2 --> L3["Level 3: Components<br/>组件图 - Controller/Service"]

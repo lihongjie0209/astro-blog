@@ -54,6 +54,7 @@ Skill 本质上是一个文件夹。它是包含可组合过程性知识（Compo
 ### 2.2 交互流程图
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph TD
     User[用户/任务] --> AgentLoop
     

@@ -48,6 +48,7 @@ description: "利用 PostgreSQL 扩展性构建现代数据仓库的架构方案
 当用户发起查询时，Postgres 的查询规划器会被 Hook 拦截：
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant User as 用户
     participant PG as PostgreSQL Planner
@@ -100,6 +101,7 @@ CALL synchronize_logs('app_logs_raw', 'app_logs_iceberg');
 * **目标端** : 数据仓库 Postgres，创建 Subscription。
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph LR
     subgraph Production ["生产环境"]
         OLTP_DB[("Postgres OLTP")]
