@@ -287,10 +287,14 @@ const nextPost =
     const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
     if (mermaidBlocks.length === 0) return;
 
+    // 获取当前主题
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const mermaidTheme = currentTheme === "dark" ? "dark" : "default";
+
     const mermaid = (await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")).default;
     mermaid.initialize({ 
       startOnLoad: false,
-      theme: "neutral"  // neutral 主题在亮色和暗色模式下都有良好的可读性
+      theme: mermaidTheme
     });
 
     for (const pre of mermaidBlocks) {
@@ -300,6 +304,8 @@ const nextPost =
       const mermaidCode = code.textContent || "";
       const div = document.createElement("div");
       div.className = "mermaid overflow-x-auto";
+      // 保存原始代码以便重新渲染
+      div.setAttribute("data-mermaid-code", mermaidCode);
       
       try {
         const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).slice(2)}`, mermaidCode);
@@ -310,11 +316,48 @@ const nextPost =
       }
     }
   }
+  
+  // 重新渲染已存在的 Mermaid 图表
+  async function reRenderMermaid() {
+    const mermaidDivs = document.querySelectorAll('.mermaid[data-mermaid-code]');
+    if (mermaidDivs.length === 0) return;
+
+    // 获取当前主题
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const mermaidTheme = currentTheme === "dark" ? "dark" : "default";
+
+    const mermaid = (await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")).default;
+    mermaid.initialize({ 
+      startOnLoad: false,
+      theme: mermaidTheme
+    });
+
+    for (const div of mermaidDivs) {
+      const mermaidCode = div.getAttribute("data-mermaid-code");
+      if (!mermaidCode) continue;
+      
+      try {
+        const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).slice(2)}`, mermaidCode);
+        div.innerHTML = svg;
+      } catch (e) {
+        console.error("Mermaid re-rendering failed:", e);
+      }
+    }
+  }
+  
   renderMermaid();
 
   // 页面切换后重新渲染 Mermaid
   document.addEventListener("astro:after-swap", () => {
     renderMermaid();
     window.scrollTo({ left: 0, top: 0, behavior: "instant" });
+  });
+
+  // 监听主题切换事件，重新渲染 Mermaid
+  document.querySelector("#theme-btn")?.addEventListener("click", () => {
+    // 延迟一下以确保主题已经切换
+    setTimeout(() => {
+      reRenderMermaid();
+    }, 50);
   });
 </script>
