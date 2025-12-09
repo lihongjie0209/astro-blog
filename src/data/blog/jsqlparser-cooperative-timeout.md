@@ -99,6 +99,7 @@ public Statement parseStatement(CCJSqlParser parser) {
 #### 原有架构
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 flowchart TD
     A["User Thread"] --> B["create ExecutorService"]
     B --> C["Parser Thread"]
@@ -111,6 +112,7 @@ flowchart TD
 #### 优化后架构
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 flowchart TD
     A["User Thread"] --> B["startTimeout - 启动计时"]
     B --> C["Parser"]
