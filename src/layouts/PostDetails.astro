@@ -289,6 +289,11 @@ const nextPost =
     return currentTheme === "dark" ? "dark" : "default";
   }
 
+  // 生成唯一的 Mermaid ID
+  function generateMermaidId() {
+    return `mermaid-${Math.random().toString(36).slice(2)}`;
+  }
+
   // 缓存 Mermaid 实例
   let mermaidInstance = null;
   
@@ -321,7 +326,7 @@ const nextPost =
       div.setAttribute("data-mermaid-code", mermaidCode);
       
       try {
-        const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).slice(2)}`, mermaidCode);
+        const { svg } = await mermaid.render(generateMermaidId(), mermaidCode);
         div.innerHTML = svg;
         pre.replaceWith(div);
       } catch (e) {
@@ -346,7 +351,7 @@ const nextPost =
       if (!mermaidCode) continue;
       
       try {
-        const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).slice(2)}`, mermaidCode);
+        const { svg } = await mermaid.render(generateMermaidId(), mermaidCode);
         div.innerHTML = svg;
       } catch (e) {
         console.error("Mermaid re-rendering failed:", e);
@@ -356,14 +361,8 @@ const nextPost =
   
   renderMermaid();
 
-  // 页面切换后重新渲染 Mermaid
-  document.addEventListener("astro:after-swap", () => {
-    renderMermaid();
-    window.scrollTo({ left: 0, top: 0, behavior: "instant" });
-  });
-
   // 监听主题属性变化，重新渲染 Mermaid
-  const observer = new MutationObserver((mutations) => {
+  let themeObserver = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
         reRenderMermaid();
@@ -372,8 +371,37 @@ const nextPost =
     }
   });
   
-  observer.observe(document.documentElement, {
+  themeObserver.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['data-theme']
+  });
+
+  // 页面切换时清理和重新初始化
+  document.addEventListener("astro:before-swap", () => {
+    // 断开观察器以防止内存泄漏
+    if (themeObserver) {
+      themeObserver.disconnect();
+    }
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    // 重新创建观察器
+    themeObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          reRenderMermaid();
+          break;
+        }
+      }
+    });
+    
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    // 重新渲染 Mermaid
+    renderMermaid();
+    window.scrollTo({ left: 0, top: 0, behavior: "instant" });
   });
 </script>
