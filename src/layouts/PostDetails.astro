@@ -282,19 +282,32 @@ const nextPost =
   attachCopyButtons();
 
   /* Mermaid diagram rendering */
+  
+  // 获取当前 Mermaid 主题
+  function getMermaidTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    return currentTheme === "dark" ? "dark" : "default";
+  }
+
+  // 缓存 Mermaid 实例
+  let mermaidInstance = null;
+  
+  async function getMermaid() {
+    if (!mermaidInstance) {
+      mermaidInstance = (await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")).default;
+    }
+    return mermaidInstance;
+  }
+
   async function renderMermaid() {
     // 查找 Shiki 处理过的 mermaid 代码块 (data-language="mermaid")
     const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
     if (mermaidBlocks.length === 0) return;
 
-    // 获取当前主题
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    const mermaidTheme = currentTheme === "dark" ? "dark" : "default";
-
-    const mermaid = (await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")).default;
+    const mermaid = await getMermaid();
     mermaid.initialize({ 
       startOnLoad: false,
-      theme: mermaidTheme
+      theme: getMermaidTheme()
     });
 
     for (const pre of mermaidBlocks) {
@@ -322,14 +335,10 @@ const nextPost =
     const mermaidDivs = document.querySelectorAll('.mermaid[data-mermaid-code]');
     if (mermaidDivs.length === 0) return;
 
-    // 获取当前主题
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    const mermaidTheme = currentTheme === "dark" ? "dark" : "default";
-
-    const mermaid = (await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")).default;
+    const mermaid = await getMermaid();
     mermaid.initialize({ 
       startOnLoad: false,
-      theme: mermaidTheme
+      theme: getMermaidTheme()
     });
 
     for (const div of mermaidDivs) {
@@ -353,11 +362,18 @@ const nextPost =
     window.scrollTo({ left: 0, top: 0, behavior: "instant" });
   });
 
-  // 监听主题切换事件，重新渲染 Mermaid
-  document.querySelector("#theme-btn")?.addEventListener("click", () => {
-    // 延迟一下以确保主题已经切换
-    setTimeout(() => {
-      reRenderMermaid();
-    }, 50);
+  // 监听主题属性变化，重新渲染 Mermaid
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+        reRenderMermaid();
+        break;
+      }
+    }
+  });
+  
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme']
   });
 </script>
