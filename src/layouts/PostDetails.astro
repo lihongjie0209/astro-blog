@@ -319,7 +319,10 @@ const nextPost =
       const code = pre.querySelector("code");
       if (!code) continue;
       
-      const mermaidCode = code.textContent || "";
+      let mermaidCode = code.textContent || "";
+      // 移除内联的主题配置，使用我们统一的主题设置
+      mermaidCode = mermaidCode.replace(/%%\{init:.*?\}%%\s*/g, '');
+      
       const div = document.createElement("div");
       div.className = "mermaid overflow-x-auto";
       // 保存原始代码以便重新渲染
@@ -347,7 +350,7 @@ const nextPost =
     });
 
     for (const div of mermaidDivs) {
-      const mermaidCode = div.getAttribute("data-mermaid-code");
+      let mermaidCode = div.getAttribute("data-mermaid-code");
       if (!mermaidCode) continue;
       
       try {
