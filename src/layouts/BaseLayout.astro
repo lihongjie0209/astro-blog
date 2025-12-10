@@ -89,14 +89,35 @@ const {
   <script>
     import mermaid from 'mermaid';
     
+    // Store original mermaid code before rendering
+    let mermaidSources = new Map();
+    
     // Initialize mermaid with theme based on current theme
     function initMermaid() {
       const theme = document.documentElement.className === 'dark' ? 'dark' : 'default';
+      
+      // Save original mermaid code if not already saved
+      document.querySelectorAll('.mermaid').forEach((el, index) => {
+        if (!mermaidSources.has(el)) {
+          mermaidSources.set(el, el.textContent.trim());
+        }
+      });
+      
       mermaid.initialize({ 
-        startOnLoad: true,
+        startOnLoad: false,
         theme: theme,
         securityLevel: 'loose',
       });
+      
+      // Clear and restore original code for all mermaid elements
+      document.querySelectorAll('.mermaid').forEach(el => {
+        const originalCode = mermaidSources.get(el);
+        if (originalCode) {
+          el.removeAttribute('data-processed');
+          el.textContent = originalCode;
+        }
+      });
+      
       mermaid.run();
     }
     
@@ -107,13 +128,6 @@ const {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          // Clear existing mermaid renders
-          document.querySelectorAll('.mermaid').forEach(el => {
-            if (el.getAttribute('data-processed')) {
-              el.removeAttribute('data-processed');
-              el.innerHTML = el.getAttribute('data-mermaid-src') || el.innerHTML;
-            }
-          });
           initMermaid();
         }
       });
