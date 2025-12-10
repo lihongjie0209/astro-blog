@@ -79,4 +79,4 @@ pnpm run dev
 
 ## 📜 License
 
-Licensed under the MIT License, Copyright © 2024-2025
+Licensed under the MIT License, Copyright © 2024
