@@ -84,5 +84,45 @@ const {
   <footer class="wfull bg-normal shadow-md py8 text-center">
     <FooterFragment/>
   </footer>
+  
+  <!-- Mermaid.js initialization -->
+  <script>
+    import mermaid from 'mermaid';
+    
+    // Initialize mermaid with theme based on current theme
+    function initMermaid() {
+      const theme = document.documentElement.className === 'dark' ? 'dark' : 'default';
+      mermaid.initialize({ 
+        startOnLoad: true,
+        theme: theme,
+        securityLevel: 'loose',
+      });
+      mermaid.run();
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', initMermaid);
+    
+    // Re-initialize when theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          // Clear existing mermaid renders
+          document.querySelectorAll('.mermaid').forEach(el => {
+            if (el.getAttribute('data-processed')) {
+              el.removeAttribute('data-processed');
+              el.innerHTML = el.getAttribute('data-mermaid-src') || el.innerHTML;
+            }
+          });
+          initMermaid();
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  </script>
 </body>
 </html>
