@@ -51,3 +51,62 @@ const { Content, headings } = await render(post)
     </Markdown>
   </div>
 </PageLayout>
+
+<script>
+  /* Mermaid diagram rendering */
+  async function renderMermaid() {
+    // 查找 Expressive Code 处理过的 mermaid 代码块 (data-language="mermaid")
+    const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
+    if (mermaidBlocks.length === 0) return;
+
+    // 尝试多个 CDN 源加载 Mermaid
+    let mermaid;
+    try {
+      mermaid = (await import("https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs")).default;
+    } catch (e1) {
+      try {
+        mermaid = (await import("https://esm.sh/mermaid@11")).default;
+      } catch (e2) {
+        console.error("Failed to load Mermaid from all CDN sources");
+        return;
+      }
+    }
+    
+    mermaid.initialize({ 
+      startOnLoad: false,
+      theme: "neutral"  // neutral 主题在亮色和暗色模式下都有良好的可读性
+    });
+
+    for (const pre of mermaidBlocks) {
+      const code = pre.querySelector("code");
+      if (!code) continue;
+      
+      // 提取 mermaid 代码（从 code 元素的文本内容中）
+      const mermaidCode = Array.from(code.querySelectorAll('.ec-line .code'))
+        .map(line => line.textContent || '')
+        .join('\n');
+      
+      const div = document.createElement("div");
+      div.className = "mermaid overflow-x-auto my-4";
+      
+      try {
+        const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).slice(2)}`, mermaidCode);
+        div.innerHTML = svg;
+        
+        // 找到包含 pre 的最外层容器元素并替换
+        const container = pre.closest('.expressive-code') || pre.closest('figure') || pre.parentElement;
+        if (container) {
+          container.replaceWith(div);
+        }
+      } catch (e) {
+        console.error("Mermaid rendering failed:", e);
+      }
+    }
+  }
+  
+  // 页面加载时渲染
+  document.addEventListener("DOMContentLoaded", renderMermaid);
+  
+  // 如果使用 View Transitions，页面切换后重新渲染
+  document.addEventListener("astro:after-swap", renderMermaid);
+</script>
