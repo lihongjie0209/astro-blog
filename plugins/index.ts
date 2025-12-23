@@ -2,10 +2,12 @@
 import remarkDirective from 'remark-directive'
 import remarkDirectiveWidgets from './remark-directive-widgets'
 import remarkMarkmap from 'remark-markmap'
+import remarkMermaid from './remark-mermaid'
 export const remarkPlugins = [
   remarkDirective,
   remarkDirectiveWidgets,
-  remarkMarkmap
+  remarkMarkmap,
+  remarkMermaid
 ]
 
 // Rehype plugins
